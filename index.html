@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>187th Legion // Republic Holonet Intranet</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        legionPrimary: '#4E3B72',
+                        legionSecondary: '#56707F',
+                        legionDark: '#12141C',
+                        legionCard: '#1A1D24',
+                        legionBorder: '#2A2F3D'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@500;600;700&display=swap');
+        body {
+            font-family: 'Rajdhani', sans-serif;
+            background-color: #0B0C10;
+            color: #E2E8F0;
+        }
+        .mono-font {
+            font-family: 'Share Tech Mono', monospace;
+        }
+        .scanlines {
+            background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0) 50%, rgba(0, 0, 0, 0.3) 50%, rgba(0, 0, 0, 0.3));
+            background-size: 100% 4px;
+        }
+        .check-item.completed span:nth-child(2) { text-decoration: line-through; color: #718096; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col scanlines">
+
+    <!-- TOP HEADER -->
+    <header class="bg-legionDark border-b border-legionBorder px-6 py-4 flex justify-between items-center shadow-lg">
+        <div class="flex items-center space-x-4">
+            <div class="w-10 h-10 rounded bg-legionPrimary flex items-center justify-center font-bold text-xl border border-purple-400 shadow-[0_0_10px_#4E3B72]">
+                187
+            </div>
+            <div>
+                <h1 class="text-xl font-bold tracking-wider text-white">187TH LEGION // INTRANET v2.8</h1>
+                <p class="text-xs text-legionSecondary mono-font">SECURE REPUBLIC NETWORK // EGM CWRP</p>
+            </div>
+        </div>
+        <div class="flex items-center space-x-3">
+            <span class="inline-block w-3 h-3 bg-green-500 rounded-full animate-pulse"></span>
+            <span class="text-xs mono-font text-gray-400">HOLONET: VERBUNDEN</span>
+        </div>
+    </header>
+
+    <!-- MAIN CONTAINER -->
+    <div class="flex flex-1 overflow-hidden">
+        
+        <!-- SIDEBAR NAVIGATION -->
+        <aside class="w-64 bg-legionDark border-r border-legionBorder flex flex-col justify-between p-4">
+            <nav class="space-y-2">
+                <button onclick="switchTab('dashboard')" id="nav-dashboard" class="w-full text-left px-4 py-3 rounded bg-legionPrimary text-white font-semibold flex items-center space-x-3 transition">
+                    <span>📊</span> <span>Dashboard</span>
+                </button>
+                <button onclick="switchTab('roster')" id="nav-roster" class="w-full text-left px-4 py-3 rounded hover:bg-legionBorder text-gray-300 font-semibold flex items-center space-x-3 transition">
+                    <span>👥</span> <span>Mitglieder & Akten</span>
+                </button>
+                <button onclick="switchTab('medals')" id="nav-medals" class="w-full text-left px-4 py-3 rounded hover:bg-legionBorder text-gray-300 font-semibold flex items-center space-x-3 transition">
+                    <span>🏅</span> <span>Medalliensystem</span>
+                </button>
+                <button onclick="switchTab('ranks')" id="nav-ranks" class="w-full text-left px-4 py-3 rounded hover:bg-legionBorder text-gray-300 font-semibold flex items-center space-x-3 transition">
+                    <span>🎖️</span> <span>Rangordnung & Aufstieg</span>
+                </button>
+                <button onclick="switchTab('academy')" id="nav-academy" class="w-full text-left px-4 py-3 rounded hover:bg-legionBorder text-gray-300 font-semibold flex items-center space-x-3 transition">
+                    <span>🎓</span> <span>Akademie & Prüfungen</span>
+                </button>
+                <button onclick="switchTab('admin')" id="nav-admin" class="w-full text-left px-4 py-3 rounded hover:bg-legionBorder text-gray-300 font-semibold flex items-center space-x-3 transition">
+                    <span>⚙️</span> <span>Verwaltung (Offiziere)</span>
+                </button>
+            </nav>
+            <div class="p-3 bg-legionCard border border-legionBorder rounded text-xs text-gray-400 mono-font">
+                <p class="text-purple-400 font-bold mb-1">SYSTEM DATEN:</p>
+                <p>187th Intranet v2.8 + Medaillen</p>
+                <button onclick="resetDemoData()" class="mt-2 text-[11px] text-legionSecondary hover:text-white underline">Daten zurücksetzen</button>
+            </div>
+        </aside>
+
+        <!-- CONTENT AREA -->
+        <main class="flex-1 overflow-y-auto p-8 bg-[#0E1017]">
+
+            <!-- TAB 1: DASHBOARD -->
+            <div id="tab-dashboard" class="space-y-6">
+                <div class="bg-gradient-to-r from-legionPrimary to-legionSecondary p-6 rounded-lg shadow-lg border border-purple-500/30">
+                    <h2 class="text-2xl font-bold text-white">Willkommen im 187th Intranet, Trooper.</h2>
+                    <p class="text-gray-200 mt-1">Zentrale Verwaltung für Dienstakten, interaktive Fortbildungen und das automatische Medaillensystem.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="bg-legionCard border border-legionBorder p-6 rounded-lg">
+                        <p class="text-xs text-legionSecondary mono-font">AKTIVE MITGLIEDER</p>
+                        <h3 id="stat-members" class="text-3xl font-bold text-white mt-2">0</h3>
+                    </div>
+                    <div class="bg-legionCard border border-legionBorder p-6 rounded-lg">
+                        <p class="text-xs text-legionSecondary mono-font">FÜHRUNGSEBENE (AB LT)</p>
+                        <h3 id="stat-officers" class="text-3xl font-bold text-purple-400 mt-2">0</h3>
+                    </div>
+                    <div class="bg-legionCard border border-legionBorder p-6 rounded-lg">
+                        <p class="text-xs text-legionSecondary mono-font">VERLEIHMEDAILLEN</p>
+                        <h3 class="text-3xl font-bold text-yellow-400 mt-2">Aktiv</h3>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 2: ROSTER & EINHEITSKARTEN -->
+            <div id="tab-roster" class="hidden space-y-6">
+                <div class="flex flex-col md:flex-row justify-between md:items-center gap-4">
+                    <div>
+                        <h2 class="text-2xl font-bold text-white">Mitgliederverzeichnis & Dienstakten</h2>
+                        <p class="text-xs text-gray-400">Klicke auf einen Trooper, um Checklisten und Medaillen zu verwalten</p>
+                    </div>
+                    <input type="text" id="search-input" onkeyup="renderRoster()" placeholder="Suche nach Name, Rang oder Einheit..." class="bg-legionCard border border-legionBorder px-4 py-2 rounded text-sm text-white focus:outline-none focus:border-purple-500 w-full md:w-72">
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="roster-grid"></div>
+            </div>
+
+            <!-- TAB 3: MEDALLIENSYSTEM -->
+            <div id="tab-medals" class="hidden space-y-6">
+                <h2 class="text-2xl font-bold text-white">Offizielles Medaillensystem der 187th Legion</h2>
+                <p class="text-gray-400 text-sm">Medaillen steigen automatisch von Stufe I ➔ Stufe II ➔ Stufe III ➔ Master auf, wenn sie erneut verliehen werden[cite: 1].</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="medal-catalog-grid"></div>
+            </div>
+
+            <!-- TAB 4: RANGORDNUNG & AUFSTIEG -->
+            <div id="tab-ranks" class="hidden space-y-6">
+                <h2 class="text-2xl font-bold text-white">Offizielle Rangordnung & Aufstiegssystem</h2>
+                <p class="text-gray-400 text-sm">Vom Praktikanten bis zum Commander[cite: 1].</p>
+                <div class="bg-legionCard border border-legionBorder rounded-lg overflow-hidden">
+                    <div id="rank-hierarchy-list" class="divide-y divide-legionBorder"></div>
+                </div>
+            </div>
+
+            <!-- TAB 5: AKADEMIE & FORTBILDUNGEN -->
+            <div id="tab-academy" class="hidden space-y-6">
+                <h2 class="text-2xl font-bold text-white">Akademie & Fortbildungen (FBs)</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="fb-academy-grid"></div>
+            </div>
+
+            <!-- TAB 6: VERWALTUNG (OFFIZIERE) -->
+            <div id="tab-admin" class="hidden space-y-6">
+                <h2 class="text-2xl font-bold text-white">Offiziers-Verwaltung</h2>
+                <div class="bg-legionCard border border-legionBorder p-6 rounded-lg max-w-xl">
+                    <h3 class="text-lg font-bold text-white mb-4">Neuen Trooper eintragen</h3>
+                    <form id="add-trooper-form" onsubmit="addTrooper(event)" class="space-y-4">
+                        <div>
+                            <label class="block text-xs uppercase mono-font text-gray-400 mb-1">Name / CT-Nummer</label>
+                            <input type="text" id="new-name" required class="w-full bg-[#12141C] border border-legionBorder px-3 py-2 rounded text-white text-sm focus:outline-none focus:border-purple-500" placeholder="z.B. CT-1870 Rex">
+                        </div>
+                        <div>
+                            <label class="block text-xs uppercase mono-font text-gray-400 mb-1">Rang</label>
+                            <select id="new-rank" class="w-full bg-[#12141C] border border-legionBorder px-3 py-2 rounded text-white text-sm focus:outline-none focus:border-purple-500"></select>
+                        </div>
+                        <div>
+                            <label class="block text-xs uppercase mono-font text-gray-400 mb-1">Einheit / Bereich</label>
+                            <input type="text" id="new-unit" required class="w-full bg-[#12141C] border border-legionBorder px-3 py-2 rounded text-white text-sm focus:outline-none focus:border-purple-500" placeholder="z.B. Infanterie / Defence Company">
+                        </div>
+                        <button type="submit" class="w-full bg-legionPrimary hover:bg-purple-700 text-white font-bold py-2 rounded transition shadow-[0_0_10px_#4E3B72]">
+                            Trooper in Datenbank speichern
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- MODAL FÜR DIENSTAKTE & MEDAILLEN-VERLEIUNG -->
+    <div id="modal" class="fixed inset-0 bg-black/80 hidden flex items-center justify-center p-4 z-50">
+        <div class="bg-legionCard border border-purple-500/50 rounded-lg max-w-2xl w-full p-6 relative shadow-[0_0_25px_rgba(78,59,114,0.4)] max-h-[90vh] flex flex-col">
+            <button onclick="closeModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white text-xl font-bold">&times;</button>
+            <div id="modal-content" class="overflow-y-auto pr-2 space-y-4"></div>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT LOGIK -->
+    <script>
+        const RANKS = [
+            { code: "Praktikant", name: "Praktikant", category: "Anwärter", level: 1 },
+            { code: "PVT", name: "Private (PVT)", category: "Mannschaften", level: 2 },
+            { code: "PFC", name: "Private First Class (PFC)", category: "Mannschaften", level: 3 },
+            { code: "LCPL", name: "Lance Corporal (LCPL)", category: "Mannschaften", level: 4 },
+            { code: "CPL", name: "Corporal (CPL)", category: "Unteroffiziere", level: 5 },
+            { code: "SGT", name: "Sergeant (SGT)", category: "Unteroffiziere", level: 6 },
+            { code: "SSG", name: "Staff Sergeant (SSG)", category: "Unteroffiziere", level: 7 },
+            { code: "SMJ", name: "Sergeant Major (SMJ)", category: "Unteroffiziere (Senior)", level: 8 },
+            { code: "LT", name: "Lieutenant (LT)", category: "Offiziersebene", level: 9 },
+            { code: "FLT", name: "First Lieutenant (FLT)", category: "Offiziersebene", level: 10 },
+            { code: "CPT", name: "Captain (CPT)", category: "Offiziersebene", level: 11 },
+            { code: "MJR", name: "Major (MJR)", category: "Einheitsleitung", level: 12 },
+            { code: "CMD", name: "Commander (CMD)", category: "Einheitsleitung", level: 13 }
+        ];
+
+        const MEDAL_CATALOG = [
+            { id: "above_beyond", name: "Above and Beyond Medal", desc: "Außergewöhnliche Leistung für das Voranbringen der Einheit[cite: 1].", maxStage: 3 },
+            { id: "combat_medical", name: "Combat Medical Badge", desc: "Medizinische Hilfe unter feindlichem Beschuss[cite: 1].", maxStage: 3 },
+            { id: "tech_excellence", name: "Technical Excellence Badge", desc: "Herausragende Leistung bei technischer Unterstützung[cite: 1].", maxStage: 3 },
+            { id: "aerial_supremacy", name: "Aerial Supremacy Badge", desc: "Herausragende Leistung gegen feindliche Luftkräfte[cite: 1].", maxStage: 3 },
+            { id: "ordnance_mastery", name: "Ordnance Mastery Badge", desc: "Effektiver Einsatz von Sprengstoffen und schweren Waffen[cite: 1].", maxStage: 3 },
+            { id: "shieldbearer", name: "Shieldbearer Medal", desc: "Kameraden unter Beschuss verteidigt[cite: 1].", maxStage: 4, hasMaster: true },
+            { id: "artillery_precision", name: "Artillery Precision Badge", desc: "Präziser und koordinierter Mörsereinsatz[cite: 1].", maxStage: 4, hasMaster: true },
+            { id: "iron_bastion", name: "Iron Bastion Cross", desc: "Hat eine Stellung stark gehalten[cite: 1].", maxStage: 3 },
+            { id: "gold_fortress", name: "Gold Fortress Cross", desc: "Hat eine Basis erfolgreich gehalten[cite: 1].", maxStage: 3 },
+            { id: "shield_of_valor", name: "Shield of Valor", desc: "Soldat des Monats – Die höchste Ehre der 187th Legion[cite: 1].", maxStage: 1 }
+        ];
+
+        const TRELLO_CHECKLISTS = {
+            "Allgemeine Fortbildungen": [
+                "Education Instruction and Wisdom [Einweisung]",
+                "Education Formality and Discipline [Formaldienst]",
+                "Education Control and Security - Theorie [ID-Kontrolle]",
+                "Education Control and Security - Praxis [ID-Kontrolle]",
+                "Education Radio and Communication [Funkdisziplin]"
+            ],
+            "Defence Company (🛡️DC)": [
+                "Education Construction and Distribution [Geschütze & Minen]",
+                "Education Defense and Protection [Schildgenerator]",
+                "Education Shoot and Hit [DC-15LE LMG]"
+            ],
+            "Artillery Company (💥AC)": [
+                "Education Fire and Blood [Granaten]",
+                "Education Artillery and Pioneering [Mörser]"
+            ],
+            "Freiwillige Fortbildungen": [
+                "Erste-Hilfe-Fortbildung",
+                "Brandschutz-Fortbildung",
+                "Massentreiber-Fortbildung"
+            ]
+        };
+
+        const DEFAULT_TROOPERS = [
+            { id: 1, name: "Rain", rank: "CMD", unit: "Einheitsleitung", checklistState: {}, medals: { "shield_of_valor": 1 } },
+            { id: 2, name: "Trust", rank: "MJR", unit: "Stabsoffiziere", checklistState: {}, medals: { "combat_medical": 2 } },
+            { id: 3, name: "Viper", rank: "CPL", unit: "Mannschaft", checklistState: { "Allgemeine Fortbildungen_0": true }, medals: { "above_beyond": 1 } }
+        ];
+
+        let troopers = JSON.parse(localStorage.getItem('187th_troopers_medals_v1')) || DEFAULT_TROOPERS;
+
+        function saveData() {
+            localStorage.setItem('187th_troopers_medals_v1', JSON.stringify(troopers));
+        }
+
+        function resetDemoData() {
+            if(confirm("Standard-Daten wiederherstellen?")) {
+                troopers = [...DEFAULT_TROOPERS];
+                saveData();
+                renderRoster();
+                updateStats();
+            }
+        }
+
+        function getRankObj(code) {
+            return RANKS.find(r => r.code === code) || { level: 0, name: code, category: 'Unbekannt' };
+        }
+
+        function switchTab(tabId) {
+            ['dashboard', 'roster', 'medals', 'ranks', 'academy', 'admin'].forEach(t => {
+                const el = document.getElementById('tab-' + t);
+                const nav = document.getElementById('nav-' + t);
+                if(el) el.classList.add('hidden');
+                if(nav) {
+                    nav.classList.remove('bg-legionPrimary', 'text-white');
+                    nav.classList.add('text-gray-300', 'hover:bg-legionBorder');
+                }
+            });
+            document.getElementById('tab-' + tabId).classList.remove('hidden');
+            const activeNav = document.getElementById('nav-' + tabId);
+            if(activeNav) {
+                activeNav.classList.add('bg-legionPrimary', 'text-white');
+                activeNav.classList.remove('text-gray-300', 'hover:bg-legionBorder');
+            }
+
+            if(tabId === 'roster') renderRoster();
+            if(tabId === 'dashboard') updateStats();
+            if(tabId === 'medals') renderMedalCatalog();
+            if(tabId === 'ranks') renderRankHierarchy();
+            if(tabId === 'academy') renderAcademy();
+        }
+
+        function updateStats() {
+            document.getElementById('stat-members').innerText = troopers.length;
+            const officers = troopers.filter(t => getRankObj(t.rank).level >= 9).length;
+            document.getElementById('stat-officers').innerText = officers;
+        }
+
+        function populateRankDropdowns() {
+            const select = document.getElementById('new-rank');
+            if(!select) return;
+            select.innerHTML = '';
+            [...RANKS].reverse().forEach(r => {
+                const opt = document.createElement('option');
+                opt.value = r.code;
+                opt.innerText = r.name;
+                select.appendChild(opt);
+            });
+        }
+
+        function renderMedalCatalog() {
+            const grid = document.getElementById('medal-catalog-grid');
+            grid.innerHTML = '';
+            MEDAL_CATALOG.forEach(m => {
+                grid.innerHTML += `
+                    <div class="bg-legionCard border border-legionBorder p-4 rounded-lg flex flex-col justify-between">
+                        <div>
+                            <div class="flex justify-between items-start mb-2">
+                                <h3 class="text-base font-bold text-white">${m.name}</h3>
+                                <span class="px-2 py-0.5 bg-yellow-900/40 text-yellow-300 border border-yellow-700/50 text-xs rounded mono-font">Bis Stufe ${m.maxStage}</span>
+                            </div>
+                            <p class="text-gray-400 text-xs">${m.desc}</p>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function renderRankHierarchy() {
+            const list = document.getElementById('rank-hierarchy-list');
+            list.innerHTML = '';
+            [...RANKS].reverse().forEach(r => {
+                const count = troopers.filter(t => t.rank === r.code).length;
+                const row = document.createElement('div');
+                row.className = "p-4 flex justify-between items-center hover:bg-[#12141C] transition";
+                row.innerHTML = `
+                    <div class="flex items-center space-x-4">
+                        <span class="w-24 text-center py-1 bg-legionPrimary/80 border border-purple-400/50 rounded text-xs font-bold mono-font text-white">${r.code}</span>
+                        <div>
+                            <p class="font-bold text-white">${r.name}</p>
+                            <p class="text-xs text-legionSecondary">${r.category} (Level ${r.level})</p>
+                        </div>
+                    </div>
+                    <span class="text-xs mono-font text-gray-400">${count} Trooper</span>
+                `;
+                list.appendChild(row);
+            });
+        }
+
+        function renderAcademy() {
+            const grid = document.getElementById('fb-academy-grid');
+            grid.innerHTML = '';
+            for(let [category, items] of Object.entries(TRELLO_CHECKLISTS)) {
+                let itemsHtml = items.map(i => `<li class="text-xs text-gray-300 py-1 border-b border-legionBorder/50">🔹 ${i}</li>`).join('');
+                grid.innerHTML += `
+                    <div class="bg-legionCard border border-legionBorder p-5 rounded-lg">
+                        <h3 class="text-lg font-bold text-white mb-3 text-purple-400">${category}</h3>
+                        <ul class="space-y-1">${itemsHtml}</ul>
+                    </div>
+                `;
+            }
+        }
+
+        function renderRoster() {
+            const grid = document.getElementById('roster-grid');
+            const search = document.getElementById('search-input').value.toLowerCase();
+            grid.innerHTML = '';
+
+            const filtered = troopers
+                .filter(t => t.name.toLowerCase().includes(search) || t.rank.toLowerCase().includes(search) || t.unit.toLowerCase().includes(search))
+                .sort((a, b) => getRankObj(b.rank).level - getRankObj(a.rank).level);
+
+            filtered.forEach(t => {
+                const level = getRankObj(t.rank).level;
+                let badgeColor = level >= 9 ? "bg-legionPrimary text-white border border-purple-400 shadow-[0_0_8px_#4E3B72]" : (level >= 5 ? "bg-purple-900/80 text-purple-200 border border-purple-600/50" : "bg-legionSecondary text-white");
+
+                let medalCount = t.medals ? Object.values(t.medals).reduce((a, b) => a + b, 0) : 0;
+
+                const card = document.createElement('div');
+                card.className = "bg-legionCard border border-legionBorder hover:border-purple-500/50 p-5 rounded-lg transition cursor-pointer flex flex-col justify-between";
+                card.onclick = () => openTrooperModal(t.id);
+                
+                card.innerHTML = `
+                    <div>
+                        <div class="flex justify-between items-start mb-2">
+                            <span class="px-2.5 py-0.5 ${badgeColor} text-xs rounded font-bold mono-font">${t.rank}</span>
+                            <span class="text-xs text-legionSecondary mono-font">ID: #${1870 + t.id}</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-white">${t.name}</h3>
+                        <p class="text-xs text-gray-400 mt-1">Bereich: <span class="text-gray-200">${t.unit}</span></p>
+                    </div>
+                    <div class="mt-4 pt-3 border-t border-legionBorder flex justify-between items-center text-xs text-gray-400 mono-font">
+                        <span>🏅 Medaillen: <strong class="text-yellow-400">${medalCount}</strong></span>
+                        <span class="text-purple-400">Akte öffnen ➔</span>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+            updateStats();
+        }
+
+        function openTrooperModal(id) {
+            const t = troopers.find(item => item.id === id);
+            if(!t) return;
+            if(!t.checklistState) t.checklistState = {};
+            if(!t.medals) t.medals = {};
+
+            const rankOptions = [...RANKS].reverse().map(r => `<option value="${r.code}" ${r.code === t.rank ? 'selected' : ''}>${r.name}</option>`).join('');
+
+            // Medaillen Badges Darstellung
+            let medalsHtml = '';
+            for(let [mId, count] of Object.entries(t.medals)) {
+                const mInfo = MEDAL_CATALOG.find(m => m.id === mId);
+                if(!mInfo) continue;
+                let stageText = `Stufe ${count}`;
+                if(count === 1) stageText = "🥉 Stufe I";
+                if(count === 2) stageText = "🥈 Stufe II";
+                if(count === 3) stageText = "🥇 Stufe III";
+                if(count >= 4) stageText = "💎 Master";
+
+                medalsHtml += `
+                    <div class="flex items-center justify-between bg-[#12141C] p-2 rounded border border-yellow-500/30 text-xs">
+                        <div>
+                            <p class="font-bold text-white">🏅 ${mInfo.name}</p>
+                            <p class="text-[10px] text-yellow-400 mono-font">${stageText} (Verleihungen: ${count})</p>
+                        </div>
+                        <button onclick="awardMedal(${t.id}, '${mId}', -1)" class="px-2 py-0.5 bg-red-900/40 text-red-300 rounded hover:bg-red-900">-</button>
+                    </div>
+                `;
+            }
+
+            // Medaillen Dropdown für Verleihung
+            let medalOptions = MEDAL_CATALOG.map(m => `<option value="${m.id}">${m.name}</option>`).join('');
+
+            // Checklisten
+            let checklistsHtml = '';
+            for(let [category, items] of Object.entries(TRELLO_CHECKLISTS)) {
+                let itemsHtml = '';
+                items.forEach((item, idx) => {
+                    let key = `${category}_${idx}`;
+                    let isChecked = t.checklistState[key] ? 'checked' : '';
+                    let completedClass = isChecked ? 'completed' : '';
+                    itemsHtml += `
+                        <label class="check-item flex items-center space-x-3 py-1 px-2 rounded hover:bg-[#1A1D24] cursor-pointer ${completedClass}">
+                            <input type="checkbox" ${isChecked} onchange="toggleChecklist('${t.id}', '${category}', ${idx}, this.checked)" class="w-4 h-4 accent-green-500 rounded cursor-pointer">
+                            <span class="text-xs text-gray-200">${item}</span>
+                        </label>
+                    `;
+                });
+                checklistsHtml += `
+                    <div class="bg-[#12141C] p-3 rounded border border-legionBorder space-y-1">
+                        <p class="font-bold text-xs text-purple-400 mb-2">☑️ ${category}</p>
+                        ${itemsHtml}
+                    </div>
+                `;
+            }
+
+            const modalContent = document.getElementById('modal-content');
+            modalContent.innerHTML = `
+                <div class="flex items-center space-x-4 pb-3 border-b border-legionBorder">
+                    <div class="px-4 py-2 bg-legionPrimary rounded flex items-center justify-center text-lg font-bold text-white border border-purple-400 mono-font">
+                        ${t.rank}
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold text-white">${t.name}</h3>
+                        <p class="text-xs text-legionSecondary mono-font">${t.unit} | ID: #${1870 + t.id}</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div class="bg-[#12141C] p-3 rounded border border-legionBorder">
+                        <label class="block text-xs text-gray-400 mono-font mb-1">RANG ÄNDERN</label>
+                        <div class="flex space-x-2">
+                            <select id="edit-rank-select" class="flex-1 bg-legionCard border border-legionBorder px-2 py-1.5 rounded text-white text-xs">${rankOptions}</select>
+                            <button onclick="updateTrooperRank(${t.id})" class="px-3 py-1.5 bg-legionPrimary hover:bg-purple-700 text-white rounded text-xs font-bold transition">Speichern</button>
+                        </div>
+                    </div>
+                    <div class="bg-[#12141C] p-3 rounded border border-legionBorder flex items-center justify-between">
+                        <div>
+                            <p class="text-xs text-gray-400 mono-font">AKTIONEN</p>
+                            <p class="text-xs text-white">Dienstakte verwalten</p>
+                        </div>
+                        <button onclick="deleteTrooper(${t.id})" class="px-3 py-1.5 bg-red-900/40 hover:bg-red-900 text-red-300 border border-red-700 rounded text-xs transition">Entlassen</button>
+                    </div>
+                </div>
+
+                <!-- MEDAILLEN VERLEIHUNG -->
+                <div class="bg-[#12141C] p-3 rounded border border-legionBorder space-y-3">
+                    <p class="text-xs text-yellow-400 uppercase mono-font font-bold">🏅 Medaillen & Automatische Stufen (Verleihen)</p>
+                    <div class="flex space-x-2">
+                        <select id="award-medal-select" class="flex-1 bg-legionCard border border-legionBorder px-2 py-1.5 rounded text-white text-xs">${medalOptions}</select>
+                        <button onclick="awardMedalFromSelect(${t.id})" class="px-4 py-1.5 bg-yellow-600 hover:bg-yellow-500 text-black font-bold rounded text-xs transition">Medaille Verleihen (+Stufe)</button>
+                    </div>
+                    <div class="space-y-2 mt-2 max-h-36 overflow-y-auto pr-1">
+                        ${medalsHtml || '<p class="text-xs text-gray-500 italic">Noch keine Medaillen verliehen.</p>'}
+                    </div>
+                </div>
+
+                <div class="space-y-3">
+                    <p class="text-xs text-gray-400 uppercase mono-font font-bold">Trello Fortbildungen & Checklisten</p>
+                    ${checklistsHtml}
+                </div>
+            `;
+            document.getElementById('modal').classList.remove('hidden');
+        }
+
+        function awardMedalFromSelect(trooperId) {
+            const mId = document.getElementById('award-medal-select').value;
+            awardMedal(trooperId, mId, 1);
+        }
+
+        function awardMedal(trooperId, mId, change) {
+            const trooper = troopers.find(t => t.id == trooperId);
+            if(trooper) {
+                if(!trooper.medals) trooper.medals = {};
+                const current = trooper.medals[mId] || 0;
+                const updated = current + change;
+                
+                if(updated <= 0) {
+                    delete trooper.medals[mId];
+                } else {
+                    trooper.medals[mId] = updated;
+                }
+                saveData();
+                openTrooperModal(trooperId);
+            }
+        }
+
+        function toggleChecklist(trooperId, category, index, isChecked) {
+            const trooper = troopers.find(t => t.id == trooperId);
+            if(trooper) {
+                if(!trooper.checklistState) trooper.checklistState = {};
+                trooper.checklistState[`${category}_${index}`] = isChecked;
+                saveData();
+            }
+        }
+
+        function updateTrooperRank(id) {
+            const newRank = document.getElementById('edit-rank-select').value;
+            const trooper = troopers.find(t => t.id === id);
+            if(trooper) {
+                trooper.rank = newRank;
+                saveData();
+                openTrooperModal(id);
+                renderRoster();
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('modal').classList.add('hidden');
+        }
+
+        function addTrooper(event) {
+            event.preventDefault();
+            const name = document.getElementById('new-name').value;
+            const rank = document.getElementById('new-rank').value;
+            const unit = document.getElementById('new-unit').value;
+
+            const newId = troopers.length > 0 ? Math.max(...troopers.map(t => t.id)) + 1 : 1;
+            troopers.push({ id: newId, name, rank, unit, checklistState: {}, medals: {} });
+            saveData();
+            
+            document.getElementById('add-trooper-form').reset();
+            switchTab('roster');
+        }
+
+        function deleteTrooper(id) {
+            if(confirm('Trooper wirklich aus der Einheit entlassen?')) {
+                troopers = troopers.filter(t => t.id !== id);
+                saveData();
+                closeModal();
+                renderRoster();
+            }
+        }
+
+        populateRankDropdowns();
+        updateStats();
+    </script>
+</body>
+</html>
